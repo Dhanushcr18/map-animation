@@ -130,77 +130,6 @@ function App() {
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
-        '.hero-frame',
-        { scale: 1.08, yPercent: 6, opacity: 0.2 },
-        {
-          scale: 1,
-          yPercent: 0,
-          opacity: 1,
-          duration: 1.2,
-          ease: 'power3.out'
-        }
-      );
-
-      gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-        const media = `.feature-media-${index}`;
-        const card = `.feature-copy-${index}`;
-        const dot = `.feature-dot-${index}`;
-
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 72%',
-            end: 'bottom 38%',
-            scrub: true
-          }
-        })
-          .to(media, { opacity: 1, scale: 1, ease: 'none' }, 0)
-          .fromTo(card, { opacity: 0, y: 48 }, { opacity: 1, y: 0, ease: 'none' }, 0.05)
-          .to(dot, { opacity: 1, scaleY: 1, backgroundColor: '#f5f5e8', ease: 'none' }, 0.05)
-          .to(card, { opacity: 0.08, y: -24, ease: 'none' }, 0.78)
-          .to(
-            media,
-            { opacity: index === featureSlides.length - 1 ? 1 : 0, scale: 1.035, ease: 'none' },
-            0.78
-          )
-          .to(dot, { opacity: 0.35, scaleY: 0.45, backgroundColor: '#d8d0bf', ease: 'none' }, 0.78);
-      });
-
-      gsap.utils.toArray<HTMLElement>('.route-step').forEach((step, index) => {
-        const bg = `.route-bg-${index}`;
-        const item = `.route-item-${index}`;
-        const path = `.route-arc-${index}`;
-        const badge = `.route-badge-${index}`;
-        const label = `.route-label-${index}`;
-        const origin = `.route-origin-${index}`;
-        const destination = `.route-destination-${index}`;
-
-        gsap.timeline({
-          scrollTrigger: {
-            trigger: step,
-            start: 'top 70%',
-            end: 'bottom 35%',
-            scrub: true
-          }
-        })
-          .to(bg, { opacity: 1, scale: 1, ease: 'none' }, 0)
-          .fromTo(item, { opacity: 0.45, x: 0 }, { opacity: 1, x: 0, ease: 'none' }, 0)
-          .fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none' }, 0.08)
-          .fromTo(origin, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, ease: 'none' }, 0.02)
-          .fromTo(destination, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, ease: 'none' }, 0.34)
-          .fromTo(
-            badge,
-            { opacity: 0, scale: 0.6, y: 18 },
-            { opacity: 1, scale: 1, y: 0, ease: 'none' },
-            0.34
-          )
-          .fromTo(label, { opacity: 0 }, { opacity: 1, ease: 'none' }, 0.36)
-          .to(item, { opacity: 0.62, ease: 'none' }, 0.78)
-          .to([badge, label, origin, destination], { opacity: 0.25, ease: 'none' }, 0.78)
-          .to(bg, { opacity: index === routeSlides.length - 1 ? 1 : 0, scale: 1.015, ease: 'none' }, 0.78);
-      });
-
-      gsap.fromTo(
         '.route-shell',
         { opacity: 0, y: 50 },
         {
@@ -214,6 +143,136 @@ function App() {
           }
         }
       );
+
+      const mm = gsap.matchMedia();
+
+      mm.add('(min-width: 1024px)', () => {
+        gsap.fromTo(
+          '.hero-frame',
+          { scale: 1.08, yPercent: 6, opacity: 0.2 },
+          {
+            scale: 1,
+            yPercent: 0,
+            opacity: 1,
+            duration: 1.2,
+            ease: 'power3.out'
+          }
+        );
+
+        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
+          const media = `.feature-media-${index}`;
+          const card = `.feature-copy-${index}`;
+          const dot = `.feature-dot-${index}`;
+
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 72%',
+              end: 'bottom 38%',
+              scrub: true
+            }
+          })
+            .to(media, { opacity: 1, scale: 1, ease: 'none' }, 0)
+            .fromTo(card, { opacity: 0, y: 48 }, { opacity: 1, y: 0, ease: 'none' }, 0.05)
+            .to(dot, { opacity: 1, scaleY: 1, backgroundColor: '#f5f5e8', ease: 'none' }, 0.05)
+            .to(card, { opacity: 0.08, y: -24, ease: 'none' }, 0.78)
+            .to(
+              media,
+              { opacity: index === featureSlides.length - 1 ? 1 : 0, scale: 1.035, ease: 'none' },
+              0.78
+            )
+            .to(dot, { opacity: 0.35, scaleY: 0.45, backgroundColor: '#d8d0bf', ease: 'none' }, 0.78);
+        });
+
+        gsap.utils.toArray<HTMLElement>('.route-step').forEach((step, index) => {
+          const bg = `.route-bg-${index}`;
+          const item = `.route-item-${index}`;
+          const path = `.route-arc-${index}`;
+          const badge = `.route-badge-${index}`;
+          const label = `.route-label-${index}`;
+          const origin = `.route-origin-${index}`;
+          const destination = `.route-destination-${index}`;
+
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 70%',
+              end: 'bottom 35%',
+              scrub: true
+            }
+          })
+            .to(bg, { opacity: 1, scale: 1, ease: 'none' }, 0)
+            .fromTo(item, { opacity: 0.45, x: 0 }, { opacity: 1, x: 0, ease: 'none' }, 0)
+            .fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none' }, 0.08)
+            .fromTo(origin, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, ease: 'none' }, 0.02)
+            .fromTo(destination, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, ease: 'none' }, 0.34)
+            .fromTo(
+              badge,
+              { opacity: 0, scale: 0.6, y: 18 },
+              { opacity: 1, scale: 1, y: 0, ease: 'none' },
+              0.34
+            )
+            .fromTo(label, { opacity: 0 }, { opacity: 1, ease: 'none' }, 0.36)
+            .to(item, { opacity: 0.62, ease: 'none' }, 0.78)
+            .to([badge, label, origin, destination], { opacity: 0.25, ease: 'none' }, 0.78)
+            .to(bg, { opacity: index === routeSlides.length - 1 ? 1 : 0, scale: 1.015, ease: 'none' }, 0.78);
+        });
+      });
+
+      mm.add('(max-width: 1023px)', () => {
+        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
+          const card = `.feature-copy-${index}`;
+          const media = `.feature-mobile-media-${index}`;
+
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 80%',
+              end: 'bottom 35%',
+              scrub: true
+            }
+          })
+            .fromTo(card, { opacity: 0.28, y: 42 }, { opacity: 1, y: 0, ease: 'none' }, 0)
+            .fromTo(media, { opacity: 0.35, scale: 0.92, y: 36 }, { opacity: 1, scale: 1, y: 0, ease: 'none' }, 0.06)
+            .to(card, { opacity: 0.2, y: -24, ease: 'none' }, 0.78)
+            .to(media, { opacity: 0.45, scale: 1.03, y: -14, ease: 'none' }, 0.78);
+        });
+
+        gsap.utils.toArray<HTMLElement>('.route-step-mobile').forEach((step, index) => {
+          const panel = `.route-mobile-panel-${index}`;
+          const item = `.route-item-${index}`;
+          const path = `.route-mobile-arc-${index}`;
+          const badge = `.route-mobile-badge-${index}`;
+          const label = `.route-mobile-label-${index}`;
+          const origin = `.route-mobile-origin-${index}`;
+          const destination = `.route-mobile-destination-${index}`;
+
+          gsap.timeline({
+            scrollTrigger: {
+              trigger: step,
+              start: 'top 78%',
+              end: 'bottom 36%',
+              scrub: true
+            }
+          })
+            .fromTo(panel, { opacity: 0.4, scale: 0.94, y: 36 }, { opacity: 1, scale: 1, y: 0, ease: 'none' }, 0)
+            .fromTo(item, { opacity: 0.45 }, { opacity: 1, ease: 'none' }, 0.02)
+            .fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none' }, 0.08)
+            .fromTo(origin, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, ease: 'none' }, 0.1)
+            .fromTo(destination, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, ease: 'none' }, 0.34)
+            .fromTo(
+              badge,
+              { opacity: 0, scale: 0.6, y: 18 },
+              { opacity: 1, scale: 1, y: 0, ease: 'none' },
+              0.34
+            )
+            .fromTo(label, { opacity: 0 }, { opacity: 0.92, ease: 'none' }, 0.36)
+            .to(item, { opacity: 0.7, ease: 'none' }, 0.82)
+            .to([badge, label, origin, destination], { opacity: 0.35, ease: 'none' }, 0.82);
+        });
+      });
+
+      return () => mm.revert();
     }, appRef);
 
     return () => {
@@ -284,7 +343,9 @@ function App() {
                         </p>
                       </div>
 
-                      <div className="mt-8 overflow-hidden rounded-[2.2rem] lg:hidden">
+                      <div
+                        className={`feature-mobile-media-${index} mt-8 overflow-hidden rounded-[2.2rem] lg:hidden`}
+                      >
                         <img src={slide.image} alt={slide.title} className="h-[64vw] w-full object-cover md:h-[58vw]" />
                       </div>
                     </div>
@@ -346,8 +407,14 @@ function App() {
 
                 <div className="space-y-6 lg:hidden">
                   {routeSlides.map((slide, index) => (
-                    <div key={slide.id} className="overflow-hidden rounded-[1.8rem] border border-white/20">
-                      <MapPanel slide={slide} index={index} />
+                    <div key={slide.id} className="route-step-mobile overflow-hidden rounded-[1.8rem] border border-white/20">
+                      <MapPanel
+                        slide={slide}
+                        index={index}
+                        animate
+                        animationPrefix="route-mobile"
+                        panelClassName={`route-mobile-panel-${index}`}
+                      />
                     </div>
                   ))}
                 </div>
@@ -366,9 +433,21 @@ function App() {
   );
 }
 
-function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index: number; animate?: boolean }) {
+function MapPanel({
+  slide,
+  index,
+  animate = false,
+  animationPrefix = 'route',
+  panelClassName = ''
+}: {
+  slide: RouteSlide;
+  index: number;
+  animate?: boolean;
+  animationPrefix?: string;
+  panelClassName?: string;
+}) {
   return (
-    <div className="relative h-full min-h-[24rem] overflow-hidden rounded-[2rem] bg-[#167fe0]">
+    <div className={`relative h-full min-h-[24rem] overflow-hidden rounded-[2rem] bg-[#167fe0] ${panelClassName}`}>
       <div
         className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-screen"
         style={{ backgroundImage: `url(${slide.backgroundImage})` }}
@@ -392,7 +471,7 @@ function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index:
         </defs>
 
         <path
-          className={animate ? `route-arc-${index}` : undefined}
+          className={animate ? `${animationPrefix}-arc-${index}` : undefined}
           d={slide.routePath}
           stroke="#f5f5dc"
           strokeWidth="4"
@@ -403,7 +482,7 @@ function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index:
         />
 
         <g
-          className={animate ? `route-origin-${index}` : undefined}
+          className={animate ? `${animationPrefix}-origin-${index}` : undefined}
           transform={`translate(${slide.originPosition.x} ${slide.originPosition.y})`}
           opacity={animate ? 0 : 1}
         >
@@ -414,7 +493,7 @@ function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index:
         </g>
 
         <g
-          className={animate ? `route-destination-${index}` : undefined}
+          className={animate ? `${animationPrefix}-destination-${index}` : undefined}
           transform={`translate(${slide.destinationPosition.x} ${slide.destinationPosition.y})`}
           opacity={animate ? 0 : 1}
         >
@@ -425,7 +504,7 @@ function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index:
         </g>
 
         <g
-          className={animate ? `route-badge-${index}` : undefined}
+          className={animate ? `${animationPrefix}-badge-${index}` : undefined}
           transform={`translate(${slide.badgePosition.x} ${slide.badgePosition.y})`}
           opacity={animate ? 0 : 1}
         >
@@ -439,7 +518,7 @@ function MapPanel({ slide, index, animate = false }: { slide: RouteSlide; index:
         </g>
 
         <text
-          className={animate ? `route-label-${index}` : undefined}
+          className={animate ? `${animationPrefix}-label-${index}` : undefined}
           x="32"
           y="526"
           fill="#f5f5dc"
