@@ -161,7 +161,7 @@ function App() {
 
         gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
           const media = `.feature-media-${index}`;
-          const card = `.feature-copy-${index}`;
+          const card = `.feature-copy-panel-${index}`;
           const dot = `.feature-dot-${index}`;
 
           gsap.timeline({
@@ -221,7 +221,7 @@ function App() {
 
       mm.add('(max-width: 1023px)', () => {
         gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-          const card = `.feature-copy-${index}`;
+          const card = `.feature-mobile-panel-${index}`;
           const media = `.feature-mobile-media-${index}`;
 
           gsap.timeline({
@@ -287,9 +287,9 @@ function App() {
     <div ref={appRef} className="bg-shell text-ink">
       <main>
         <section className="relative mx-auto max-w-[1560px] px-4 pb-12 pt-4 md:px-8 md:pt-6">
-          <div className="grid gap-8 lg:grid-cols-[minmax(0,0.63fr)_minmax(320px,0.37fr)]">
-            <div className="hidden lg:block">
-              <div className="sticky top-4 flex h-[calc(100vh-2rem)] items-end overflow-hidden rounded-[3.5rem]">
+          <div className="hidden lg:block lg:min-h-[336vh]">
+            <div className="grid gap-8 lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:grid-cols-[minmax(0,0.63fr)_minmax(320px,0.37fr)]">
+              <div className="relative flex items-end overflow-hidden rounded-[3.5rem]">
                 <div className="absolute bottom-10 left-10 z-20 flex flex-col gap-3">
                   {featureSlides.map((slide, index) => (
                     <span
@@ -310,55 +310,57 @@ function App() {
                   </div>
                 ))}
               </div>
+
+              <div className="relative">
+                {featureSlides.map((slide, index) => (
+                  <div
+                    key={slide.id}
+                    className={`feature-copy-panel-${index} absolute inset-0 flex items-center ${
+                      index === 0 ? 'opacity-100' : 'opacity-0'
+                    }`}
+                  >
+                    <FeatureCopy slide={slide} />
+                  </div>
+                ))}
+              </div>
             </div>
+          </div>
 
-            <div className="relative">
+          <div className="lg:hidden min-h-[300vh]">
+            <div className="sticky top-4 h-[calc(100vh-2rem)] overflow-hidden rounded-[2.2rem]">
               {featureSlides.map((slide, index) => (
-                <article
+                <div
                   key={slide.id}
-                  className="feature-step flex min-h-[100vh] items-center py-12 lg:py-0"
+                  className={`feature-mobile-panel-${index} absolute inset-0 ${
+                    index === 0 ? 'opacity-100' : 'opacity-0'
+                  }`}
                 >
-                  <div className={`feature-copy-${index} w-full opacity-100 lg:opacity-0`}>
-                    <div className="mx-auto max-w-[370px] lg:ml-auto lg:mr-0 lg:max-w-[370px]">
-                      <div
-                        className={`feature-mobile-media-${index} mb-8 overflow-hidden rounded-[2.2rem] lg:hidden`}
-                      >
-                        <img
-                          src={slide.image}
-                          alt={slide.title}
-                          className="h-[64vw] w-full object-cover md:h-[58vw]"
-                        />
-                      </div>
+                  <div className="flex h-full flex-col">
+                    <div
+                      className={`feature-mobile-media-${index} overflow-hidden rounded-[2.2rem] ${
+                        index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.04]'
+                      }`}
+                    >
+                      <img
+                        src={slide.image}
+                        alt={slide.title}
+                        className="h-[58vh] min-h-[18rem] w-full object-cover"
+                      />
+                    </div>
 
-                      <div className="grid gap-8 lg:block">
-                        <div className="w-full max-w-[250px] rounded-[1.4rem] border border-black/10 bg-white/12 p-4">
-                          <div
-                            className="rounded-[1.1rem] border border-black/10 p-4"
-                            style={{ backgroundColor: 'rgba(245, 243, 223, 0.7)' }}
-                          >
-                            <div className="mb-3 aspect-square overflow-hidden rounded-[1rem] border border-black/10 bg-shell">
-                              <FeatureArt kind={slide.art} />
-                            </div>
-                            <p className="text-[13px] leading-none tracking-[-0.02em] text-black/70">
-                              {slide.figure}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-6">
-                          <h2 className="max-w-[10ch] font-sans text-[clamp(2.4rem,4vw,4.15rem)] font-semibold leading-[0.96] tracking-[-0.06em]">
-                            {slide.title}
-                          </h2>
-                          <p className="max-w-[32ch] text-[clamp(1.05rem,1.45vw,1.25rem)] leading-[1.35] tracking-[-0.03em] text-black/76">
-                            {slide.body}
-                          </p>
-                        </div>
-                      </div>
+                    <div className="flex-1 px-1 pb-3 pt-6">
+                      <FeatureCopy slide={slide} mobile />
                     </div>
                   </div>
-                </article>
+                </div>
               ))}
             </div>
+          </div>
+
+          <div aria-hidden="true">
+            {featureSlides.map((slide) => (
+              <div key={`${slide.id}-feature-trigger`} className="feature-step h-[100vh]" />
+            ))}
           </div>
         </section>
 
@@ -435,6 +437,35 @@ function App() {
           </div>
         </section>
       </main>
+    </div>
+  );
+}
+
+function FeatureCopy({ slide, mobile = false }: { slide: FeatureSlide; mobile?: boolean }) {
+  return (
+    <div className={`mx-auto w-full ${mobile ? 'max-w-none px-1' : 'max-w-[370px] lg:ml-auto lg:mr-0'}`}>
+      <div className={`grid gap-8 ${mobile ? '' : 'lg:block'}`}>
+        <div className="w-full max-w-[250px] rounded-[1.4rem] border border-black/10 bg-white/12 p-4">
+          <div
+            className="rounded-[1.1rem] border border-black/10 p-4"
+            style={{ backgroundColor: 'rgba(245, 243, 223, 0.7)' }}
+          >
+            <div className="mb-3 aspect-square overflow-hidden rounded-[1rem] border border-black/10 bg-shell">
+              <FeatureArt kind={slide.art} />
+            </div>
+            <p className="text-[13px] leading-none tracking-[-0.02em] text-black/70">{slide.figure}</p>
+          </div>
+        </div>
+
+        <div className="space-y-6">
+          <h2 className="max-w-[10ch] font-sans text-[clamp(2.4rem,4vw,4.15rem)] font-semibold leading-[0.96] tracking-[-0.06em]">
+            {slide.title}
+          </h2>
+          <p className="max-w-[32ch] text-[clamp(1.05rem,1.45vw,1.25rem)] leading-[1.35] tracking-[-0.03em] text-black/76">
+            {slide.body}
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
