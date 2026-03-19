@@ -319,34 +319,40 @@ function App() {
                   className="feature-step flex min-h-[100vh] items-center py-12 lg:py-0"
                 >
                   <div className={`feature-copy-${index} w-full opacity-100 lg:opacity-0`}>
-                    <div className="mx-auto max-w-[370px] lg:ml-auto lg:mr-0">
-                      <div className="rounded-[1.4rem] border border-black/10 bg-white/12 p-4">
-                        <div
-                          className="rounded-[1.1rem] border border-black/10 p-4"
-                          style={{ backgroundColor: 'rgba(245, 243, 223, 0.7)' }}
-                        >
-                          <div className="mb-3 aspect-square overflow-hidden rounded-[1rem] border border-black/10 bg-shell">
-                            <FeatureArt kind={slide.art} />
+                    <div className="mx-auto max-w-[370px] lg:ml-auto lg:mr-0 lg:max-w-[370px]">
+                      <div
+                        className={`feature-mobile-media-${index} mb-8 overflow-hidden rounded-[2.2rem] lg:hidden`}
+                      >
+                        <img
+                          src={slide.image}
+                          alt={slide.title}
+                          className="h-[64vw] w-full object-cover md:h-[58vw]"
+                        />
+                      </div>
+
+                      <div className="grid gap-8 lg:block">
+                        <div className="w-full max-w-[250px] rounded-[1.4rem] border border-black/10 bg-white/12 p-4">
+                          <div
+                            className="rounded-[1.1rem] border border-black/10 p-4"
+                            style={{ backgroundColor: 'rgba(245, 243, 223, 0.7)' }}
+                          >
+                            <div className="mb-3 aspect-square overflow-hidden rounded-[1rem] border border-black/10 bg-shell">
+                              <FeatureArt kind={slide.art} />
+                            </div>
+                            <p className="text-[13px] leading-none tracking-[-0.02em] text-black/70">
+                              {slide.figure}
+                            </p>
                           </div>
-                          <p className="text-[13px] leading-none tracking-[-0.02em] text-black/70">
-                            {slide.figure}
+                        </div>
+
+                        <div className="space-y-6">
+                          <h2 className="max-w-[10ch] font-sans text-[clamp(2.4rem,4vw,4.15rem)] font-semibold leading-[0.96] tracking-[-0.06em]">
+                            {slide.title}
+                          </h2>
+                          <p className="max-w-[32ch] text-[clamp(1.05rem,1.45vw,1.25rem)] leading-[1.35] tracking-[-0.03em] text-black/76">
+                            {slide.body}
                           </p>
                         </div>
-                      </div>
-
-                      <div className="mt-8 space-y-6">
-                        <h2 className="max-w-[10ch] font-sans text-[clamp(2.4rem,4vw,4.15rem)] font-semibold leading-[0.96] tracking-[-0.06em]">
-                          {slide.title}
-                        </h2>
-                        <p className="max-w-[32ch] text-[clamp(1.05rem,1.45vw,1.25rem)] leading-[1.35] tracking-[-0.03em] text-black/76">
-                          {slide.body}
-                        </p>
-                      </div>
-
-                      <div
-                        className={`feature-mobile-media-${index} mt-8 overflow-hidden rounded-[2.2rem] lg:hidden`}
-                      >
-                        <img src={slide.image} alt={slide.title} className="h-[64vw] w-full object-cover md:h-[58vw]" />
                       </div>
                     </div>
                   </div>
