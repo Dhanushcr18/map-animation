@@ -1,9 +1,13 @@
 import { useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { MotionPathPlugin } from 'gsap/MotionPathPlugin';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
+import type { LatLngTuple } from 'leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 type FeatureSlide = {
   id: string;
@@ -23,8 +27,8 @@ type RouteSlide = {
   note: string;
   origin: string;
   destination: string;
-  map: 'newyork' | 'dubai' | 'la';
-  backgroundImage: string;
+  originCoords: LatLngTuple;
+  destinationCoords: LatLngTuple;
   routePath: string;
   badgePosition: { x: number; y: number };
   originPosition: { x: number; y: number };
@@ -68,8 +72,8 @@ const routeSlides: RouteSlide[] = [
     note: '43 min faster by air*',
     origin: 'JFK Airport',
     destination: 'Manhattan',
-    map: 'newyork',
-    backgroundImage: '/reference/map-panels/newyork-map.png',
+    originCoords: [40.6413, -73.7781],
+    destinationCoords: [40.7549, -73.9996],
     routePath: 'M690 382C678 220 580 120 420 102C304 88 208 138 132 230',
     badgePosition: { x: 160, y: 228 },
     originPosition: { x: 694, y: 384 },
@@ -84,8 +88,8 @@ const routeSlides: RouteSlide[] = [
     note: '33 min faster by air*',
     origin: 'DXB Airport',
     destination: 'Palm Jumeirah',
-    map: 'dubai',
-    backgroundImage: '/reference/map-panels/dubai-map.png',
+    originCoords: [25.2532, 55.3657],
+    destinationCoords: [25.1124, 55.1387],
     routePath: 'M162 476C246 360 354 270 468 214C542 178 610 176 680 212',
     badgePosition: { x: 596, y: 200 },
     originPosition: { x: 162, y: 476 },
@@ -100,8 +104,8 @@ const routeSlides: RouteSlide[] = [
     note: '33 min faster by air*',
     origin: 'LAX Airport',
     destination: 'Downtown LA',
-    map: 'la',
-    backgroundImage: '/reference/map-panels/la-map.png',
+    originCoords: [33.9416, -118.4085],
+    destinationCoords: [34.0522, -118.2437],
     routePath: 'M138 312C188 162 338 98 500 120C614 136 686 198 740 276',
     badgePosition: { x: 494, y: 120 },
     originPosition: { x: 138, y: 312 },
@@ -257,6 +261,7 @@ function App() {
           const label = `.route-label-${index}`;
           const origin = `.route-origin-${index}`;
           const destination = `.route-destination-${index}`;
+          const traveler = `.route-traveler-${index}`;
 
           gsap.timeline({
             scrollTrigger: {
@@ -270,6 +275,23 @@ function App() {
             .fromTo(item, { opacity: 0.45, x: 0 }, { opacity: 1, x: 0, ease: 'none' }, 0)
             .fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none' }, 0.08)
             .fromTo(origin, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, ease: 'none' }, 0.02)
+            .fromTo(
+              traveler,
+              { opacity: 0, scale: 0.6 },
+              {
+                opacity: 1,
+                scale: 1,
+                motionPath: {
+                  path,
+                  align: path,
+                  alignOrigin: [0.5, 0.5],
+                  start: 0,
+                  end: 1
+                },
+                ease: 'none'
+              },
+              0.08
+            )
             .fromTo(destination, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, ease: 'none' }, 0.34)
             .fromTo(
               badge,
@@ -279,7 +301,7 @@ function App() {
             )
             .fromTo(label, { opacity: 0 }, { opacity: 1, ease: 'none' }, 0.36)
             .to(item, { opacity: 0.62, ease: 'none' }, 0.78)
-            .to([badge, label, origin, destination], { opacity: 0.25, ease: 'none' }, 0.78)
+            .to([badge, label, origin, destination, traveler], { opacity: 0.25, ease: 'none' }, 0.78)
             .to(bg, { opacity: index === routeSlides.length - 1 ? 1 : 0, scale: 1.015, ease: 'none' }, 0.78);
         });
       });
@@ -382,6 +404,7 @@ function App() {
           const label = `.route-mobile-label-${index}`;
           const origin = `.route-mobile-origin-${index}`;
           const destination = `.route-mobile-destination-${index}`;
+          const traveler = `.route-mobile-traveler-${index}`;
 
           gsap.timeline({
             scrollTrigger: {
@@ -395,6 +418,23 @@ function App() {
             .fromTo(item, { opacity: 0.45 }, { opacity: 1, ease: 'none' }, 0.02)
             .fromTo(path, { strokeDashoffset: 1 }, { strokeDashoffset: 0, ease: 'none' }, 0.08)
             .fromTo(origin, { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, ease: 'none' }, 0.1)
+            .fromTo(
+              traveler,
+              { opacity: 0, scale: 0.6 },
+              {
+                opacity: 1,
+                scale: 1,
+                motionPath: {
+                  path,
+                  align: path,
+                  alignOrigin: [0.5, 0.5],
+                  start: 0,
+                  end: 1
+                },
+                ease: 'none'
+              },
+              0.08
+            )
             .fromTo(destination, { opacity: 0, scale: 0.5 }, { opacity: 1, scale: 1, ease: 'none' }, 0.34)
             .fromTo(
               badge,
@@ -404,7 +444,7 @@ function App() {
             )
             .fromTo(label, { opacity: 0 }, { opacity: 0.92, ease: 'none' }, 0.36)
             .to(item, { opacity: 0.7, ease: 'none' }, 0.82)
-            .to([badge, label, origin, destination], { opacity: 0.35, ease: 'none' }, 0.82);
+            .to([badge, label, origin, destination, traveler], { opacity: 0.35, ease: 'none' }, 0.82);
         });
       });
 
@@ -622,89 +662,124 @@ function MapPanel({
 }) {
   return (
     <div className={`relative h-full min-h-[24rem] overflow-hidden rounded-[2rem] bg-[#167fe0] ${panelClassName}`}>
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-screen"
-        style={{ backgroundImage: `url(${slide.backgroundImage})` }}
-      />
-      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(19,128,223,0.08),rgba(19,128,223,0.22))]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.08),transparent_34%)]" />
-      <svg
-        viewBox="0 0 840 560"
-        className="relative z-10 h-full w-full"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        aria-label={`${slide.label} route map`}
+      <MapContainer
+        bounds={routeBounds(slide)}
+        boundsOptions={{ padding: [48, 48] }}
+        zoomControl={false}
+        dragging={false}
+        doubleClickZoom={false}
+        scrollWheelZoom={false}
+        boxZoom={false}
+        keyboard={false}
+        touchZoom={false}
+        attributionControl={false}
+        className="route-map absolute inset-0 z-0"
       >
-        <rect width="840" height="560" fill="url(#mapWash)" />
-
-        <defs>
-          <linearGradient id="mapWash" x1="420" y1="0" x2="420" y2="560" gradientUnits="userSpaceOnUse">
-            <stop stopColor="#1380df" stopOpacity="0.06" />
-            <stop offset="1" stopColor="#1380df" stopOpacity="0.22" />
-          </linearGradient>
-        </defs>
-
-        <path
-          className={animate ? `${animationPrefix}-arc-${index}` : undefined}
-          d={slide.routePath}
-          stroke="#f5f5dc"
-          strokeWidth="4"
-          strokeLinecap="round"
-          pathLength="1"
-          strokeDasharray="1"
-          strokeDashoffset={animate ? 1 : 0}
-        />
-
-        <g
-          className={animate ? `${animationPrefix}-origin-${index}` : undefined}
-          transform={`translate(${slide.originPosition.x} ${slide.originPosition.y})`}
-          opacity={animate ? 0 : 1}
-        >
-          <circle r="11" fill="#167fe0" stroke="#f5f5dc" strokeWidth="2.5" />
-          <text x="-22" y="34" fill="#f5f5dc" fontSize="18" fontWeight="700">
-            {slide.origin}
-          </text>
-        </g>
-
-        <g
-          className={animate ? `${animationPrefix}-destination-${index}` : undefined}
-          transform={`translate(${slide.destinationPosition.x} ${slide.destinationPosition.y})`}
-          opacity={animate ? 0 : 1}
-        >
-          <circle r="13" fill="#f5f5dc" />
-          <text x="-22" y="40" fill="#f5f5dc" fontSize="18" fontWeight="700">
-            {slide.destination}
-          </text>
-        </g>
-
-        <g
-          className={animate ? `${animationPrefix}-badge-${index}` : undefined}
-          transform={`translate(${slide.badgePosition.x} ${slide.badgePosition.y})`}
-          opacity={animate ? 0 : 1}
-        >
-          <circle r="34" fill="#f5f5dc" />
-          <text y="-1" textAnchor="middle" fill="#1380df" fontSize="24" fontWeight="800">
-            {slide.time}
-          </text>
-          <text y="18" textAnchor="middle" fill="#1380df" fontSize="14" fontWeight="700">
-            min
-          </text>
-        </g>
-
-        <text
-          className={animate ? `${animationPrefix}-label-${index}` : undefined}
-          x="32"
-          y="526"
-          fill="#f5f5dc"
-          fontSize="18"
-          fontWeight="600"
-          opacity={animate ? 0 : 0.92}
-        >
-          {slide.route}
-        </text>
-      </svg>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      </MapContainer>
+      <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(19,128,223,0.04),rgba(19,128,223,0.14))]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.05),transparent_34%)]" />
+      <RouteOverlay slide={slide} index={index} animate={animate} animationPrefix={animationPrefix} />
     </div>
   );
+}
+
+function RouteOverlay({
+  slide,
+  index,
+  animate,
+  animationPrefix
+}: {
+  slide: RouteSlide;
+  index: number;
+  animate: boolean;
+  animationPrefix: string;
+}) {
+  return (
+    <svg
+      viewBox="0 0 840 560"
+      className="pointer-events-none absolute inset-0 z-10 h-full w-full"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label={`${slide.label} route map`}
+    >
+      <path
+        className={animate ? `${animationPrefix}-arc-${index}` : undefined}
+        d={slide.routePath}
+        stroke="#f5f5dc"
+        strokeWidth="4"
+        strokeLinecap="round"
+        pathLength="1"
+        strokeDasharray="1"
+        strokeDashoffset={animate ? 1 : 0}
+      />
+
+      <g
+        className={animate ? `${animationPrefix}-origin-${index}` : undefined}
+        transform={`translate(${slide.originPosition.x} ${slide.originPosition.y})`}
+        opacity={animate ? 0 : 1}
+      >
+        <circle r="11" fill="#167fe0" stroke="#f5f5dc" strokeWidth="2.5" />
+        <text x="-22" y="34" fill="#f5f5dc" fontSize="18" fontWeight="700">
+          {slide.origin}
+        </text>
+      </g>
+
+      <g
+        className={animate ? `${animationPrefix}-destination-${index}` : undefined}
+        transform={`translate(${slide.destinationPosition.x} ${slide.destinationPosition.y})`}
+        opacity={animate ? 0 : 1}
+      >
+        <circle r="13" fill="#f5f5dc" />
+        <text x="-22" y="40" fill="#f5f5dc" fontSize="18" fontWeight="700">
+          {slide.destination}
+        </text>
+      </g>
+
+      <g className={animate ? `${animationPrefix}-traveler-${index}` : undefined} opacity={animate ? 0 : 1}>
+        <circle r="8" fill="#f5f5dc" />
+        <circle r="16" fill="#f5f5dc" fillOpacity="0.16" />
+      </g>
+
+      <g
+        className={animate ? `${animationPrefix}-badge-${index}` : undefined}
+        transform={`translate(${slide.badgePosition.x} ${slide.badgePosition.y})`}
+        opacity={animate ? 0 : 1}
+      >
+        <circle r="34" fill="#f5f5dc" />
+        <text y="-1" textAnchor="middle" fill="#1380df" fontSize="24" fontWeight="800">
+          {slide.time}
+        </text>
+        <text y="18" textAnchor="middle" fill="#1380df" fontSize="14" fontWeight="700">
+          min
+        </text>
+      </g>
+
+      <text
+        className={animate ? `${animationPrefix}-label-${index}` : undefined}
+        x="32"
+        y="526"
+        fill="#f5f5dc"
+        fontSize="18"
+        fontWeight="600"
+        opacity={animate ? 0 : 0.92}
+      >
+        {slide.route}
+      </text>
+    </svg>
+  );
+}
+
+function routeBounds(slide: RouteSlide): [LatLngTuple, LatLngTuple] {
+  const [lat1, lng1] = slide.originCoords;
+  const [lat2, lng2] = slide.destinationCoords;
+  const latPadding = Math.abs(lat1 - lat2) * 0.45 + 0.05;
+  const lngPadding = Math.abs(lng1 - lng2) * 0.45 + 0.05;
+
+  return [
+    [Math.min(lat1, lat2) - latPadding, Math.min(lng1, lng2) - lngPadding],
+    [Math.max(lat1, lat2) + latPadding, Math.max(lng1, lng2) + lngPadding]
+  ];
 }
 
 function FeatureArt({ kind }: { kind: FeatureSlide['art'] }) {
