@@ -147,6 +147,8 @@ function App() {
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
+        const featureSegmentCount = featureSlides.length;
+
         gsap.fromTo(
           '.hero-frame',
           { scale: 1.08, yPercent: 6, opacity: 0.2 },
@@ -163,7 +165,6 @@ function App() {
           featureSlides.forEach((_, index) => {
             gsap.to(`.feature-media-${index}`, {
               opacity: index === activeIndex ? 1 : 0,
-              scale: index === activeIndex ? 1 : 1.04,
               duration: 0.55,
               ease: 'power2.out',
               overwrite: true
@@ -186,22 +187,26 @@ function App() {
           });
         };
 
-        showDesktopFeature(0);
+        const updateDesktopFeatureZoom = (progress: number) => {
+          featureSlides.forEach((_, index) => {
+            const segmentStart = index / featureSegmentCount;
+            const segmentProgress = gsap.utils.clamp(
+              0,
+              1,
+              (progress - segmentStart) * featureSegmentCount
+            );
+            const scale = index === 0 && progress <= 0
+              ? 1.14
+              : 1.14 - segmentProgress * 0.14;
 
-        gsap.fromTo(
-          '.feature-media-0',
-          { scale: 1.12 },
-          {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '.feature-section',
-              start: 'top top',
-              end: 'top+=40% top',
-              scrub: true
-            }
-          }
-        );
+            gsap.set(`.feature-image-${index}`, {
+              scale: Number(scale.toFixed(4))
+            });
+          });
+        };
+
+        showDesktopFeature(0);
+        updateDesktopFeatureZoom(0);
 
         let desktopActiveIndex = 0;
         ScrollTrigger.create({
@@ -217,6 +222,7 @@ function App() {
               desktopActiveIndex = nextIndex;
               showDesktopFeature(nextIndex);
             }
+            updateDesktopFeatureZoom(self.progress);
           }
         });
 
@@ -256,6 +262,8 @@ function App() {
       });
 
       mm.add('(max-width: 1023px)', () => {
+        const featureSegmentCount = featureSlides.length;
+
         const showMobileFeature = (activeIndex: number) => {
           featureSlides.forEach((_, index) => {
             gsap.to(`.feature-mobile-panel-${index}`, {
@@ -267,7 +275,6 @@ function App() {
             });
             gsap.to(`.feature-mobile-media-${index}`, {
               opacity: index === activeIndex ? 1 : 0,
-              scale: index === activeIndex ? 1 : 1.04,
               y: index === activeIndex ? 0 : 18,
               duration: 0.55,
               ease: 'power2.out',
@@ -276,22 +283,26 @@ function App() {
           });
         };
 
-        showMobileFeature(0);
+        const updateMobileFeatureZoom = (progress: number) => {
+          featureSlides.forEach((_, index) => {
+            const segmentStart = index / featureSegmentCount;
+            const segmentProgress = gsap.utils.clamp(
+              0,
+              1,
+              (progress - segmentStart) * featureSegmentCount
+            );
+            const scale = index === 0 && progress <= 0
+              ? 1.14
+              : 1.14 - segmentProgress * 0.14;
 
-        gsap.fromTo(
-          '.feature-mobile-media-0',
-          { scale: 1.12 },
-          {
-            scale: 1,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: '.feature-section',
-              start: 'top top',
-              end: 'top+=40% top',
-              scrub: true
-            }
-          }
-        );
+            gsap.set(`.feature-mobile-image-${index}`, {
+              scale: Number(scale.toFixed(4))
+            });
+          });
+        };
+
+        showMobileFeature(0);
+        updateMobileFeatureZoom(0);
 
         let mobileActiveIndex = 0;
         ScrollTrigger.create({
@@ -307,6 +318,7 @@ function App() {
               mobileActiveIndex = nextIndex;
               showMobileFeature(nextIndex);
             }
+            updateMobileFeatureZoom(self.progress);
           }
         });
 
@@ -375,10 +387,14 @@ function App() {
                   <div
                     key={slide.id}
                     className={`feature-media-${index} absolute inset-0 overflow-hidden rounded-[3.5rem] ${
-                      index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.04]'
+                      index === 0 ? 'opacity-100' : 'opacity-0'
                     }`}
                   >
-                    <img src={slide.image} alt={slide.title} className="h-full w-full object-cover" />
+                    <img
+                      src={slide.image}
+                      alt={slide.title}
+                      className={`feature-image-${index} h-full w-full object-cover ${index === 0 ? 'scale-[1.14]' : 'scale-100'}`}
+                    />
                   </div>
                 ))}
               </div>
@@ -410,13 +426,15 @@ function App() {
                   <div className="flex h-full flex-col">
                     <div
                       className={`feature-mobile-media-${index} overflow-hidden rounded-[2.2rem] ${
-                        index === 0 ? 'opacity-100 scale-100' : 'opacity-0 scale-[1.04]'
+                        index === 0 ? 'opacity-100' : 'opacity-0'
                       }`}
                     >
                       <img
                         src={slide.image}
                         alt={slide.title}
-                        className="h-[58vh] min-h-[18rem] w-full object-cover"
+                        className={`feature-mobile-image-${index} h-[58vh] min-h-[18rem] w-full object-cover ${
+                          index === 0 ? 'scale-[1.14]' : 'scale-100'
+                        }`}
                       />
                     </div>
 
