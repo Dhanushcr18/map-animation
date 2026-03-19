@@ -159,29 +159,43 @@ function App() {
           }
         );
 
-        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-          const media = `.feature-media-${index}`;
-          const card = `.feature-copy-panel-${index}`;
-          const dot = `.feature-dot-${index}`;
+        const showDesktopFeature = (activeIndex: number) => {
+          featureSlides.forEach((_, index) => {
+            gsap.to(`.feature-media-${index}`, {
+              opacity: index === activeIndex ? 1 : 0,
+              scale: index === activeIndex ? 1 : 1.04,
+              duration: 0.55,
+              ease: 'power2.out',
+              overwrite: true
+            });
+            gsap.to(`.feature-copy-panel-${index}`, {
+              opacity: index === activeIndex ? 1 : 0,
+              y: index === activeIndex ? 0 : 24,
+              duration: 0.45,
+              ease: 'power2.out',
+              overwrite: true
+            });
+            gsap.to(`.feature-dot-${index}`, {
+              opacity: index === activeIndex ? 1 : 0.35,
+              scaleY: index === activeIndex ? 1 : 0.45,
+              backgroundColor: index === activeIndex ? '#f5f5e8' : '#d8d0bf',
+              duration: 0.35,
+              ease: 'power2.out',
+              overwrite: true
+            });
+          });
+        };
 
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: step,
-              start: 'top 72%',
-              end: 'bottom 38%',
-              scrub: true
-            }
-          })
-            .to(media, { opacity: 1, scale: 1, ease: 'none' }, 0)
-            .fromTo(card, { opacity: 0, y: 48 }, { opacity: 1, y: 0, ease: 'none' }, 0.05)
-            .to(dot, { opacity: 1, scaleY: 1, backgroundColor: '#f5f5e8', ease: 'none' }, 0.05)
-            .to(card, { opacity: 0.08, y: -24, ease: 'none' }, 0.78)
-            .to(
-              media,
-              { opacity: index === featureSlides.length - 1 ? 1 : 0, scale: 1.035, ease: 'none' },
-              0.78
-            )
-            .to(dot, { opacity: 0.35, scaleY: 0.45, backgroundColor: '#d8d0bf', ease: 'none' }, 0.78);
+        showDesktopFeature(0);
+
+        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
+          ScrollTrigger.create({
+            trigger: step,
+            start: 'top center',
+            end: 'bottom center',
+            onEnter: () => showDesktopFeature(index),
+            onEnterBack: () => showDesktopFeature(index)
+          });
         });
 
         gsap.utils.toArray<HTMLElement>('.route-step').forEach((step, index) => {
@@ -220,22 +234,36 @@ function App() {
       });
 
       mm.add('(max-width: 1023px)', () => {
-        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-          const card = `.feature-mobile-panel-${index}`;
-          const media = `.feature-mobile-media-${index}`;
+        const showMobileFeature = (activeIndex: number) => {
+          featureSlides.forEach((_, index) => {
+            gsap.to(`.feature-mobile-panel-${index}`, {
+              opacity: index === activeIndex ? 1 : 0,
+              y: index === activeIndex ? 0 : 18,
+              duration: 0.45,
+              ease: 'power2.out',
+              overwrite: true
+            });
+            gsap.to(`.feature-mobile-media-${index}`, {
+              opacity: index === activeIndex ? 1 : 0,
+              scale: index === activeIndex ? 1 : 1.04,
+              y: index === activeIndex ? 0 : 18,
+              duration: 0.55,
+              ease: 'power2.out',
+              overwrite: true
+            });
+          });
+        };
 
-          gsap.timeline({
-            scrollTrigger: {
-              trigger: step,
-              start: 'top 80%',
-              end: 'bottom 35%',
-              scrub: true
-            }
-          })
-            .fromTo(card, { opacity: 0.28, y: 42 }, { opacity: 1, y: 0, ease: 'none' }, 0)
-            .fromTo(media, { opacity: 0.35, scale: 0.92, y: 36 }, { opacity: 1, scale: 1, y: 0, ease: 'none' }, 0.06)
-            .to(card, { opacity: 0.2, y: -24, ease: 'none' }, 0.78)
-            .to(media, { opacity: 0.45, scale: 1.03, y: -14, ease: 'none' }, 0.78);
+        showMobileFeature(0);
+
+        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
+          ScrollTrigger.create({
+            trigger: step,
+            start: 'top center',
+            end: 'bottom center',
+            onEnter: () => showMobileFeature(index),
+            onEnterBack: () => showMobileFeature(index)
+          });
         });
 
         gsap.utils.toArray<HTMLElement>('.route-step-mobile').forEach((step, index) => {
