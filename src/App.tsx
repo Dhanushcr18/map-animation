@@ -188,14 +188,21 @@ function App() {
 
         showDesktopFeature(0);
 
-        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-          ScrollTrigger.create({
-            trigger: step,
-            start: 'top center',
-            end: 'bottom center',
-            onEnter: () => showDesktopFeature(index),
-            onEnterBack: () => showDesktopFeature(index)
-          });
+        let desktopActiveIndex = 0;
+        ScrollTrigger.create({
+          trigger: '.feature-section',
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => {
+            const nextIndex = Math.min(
+              featureSlides.length - 1,
+              Math.floor(self.progress * featureSlides.length)
+            );
+            if (nextIndex !== desktopActiveIndex) {
+              desktopActiveIndex = nextIndex;
+              showDesktopFeature(nextIndex);
+            }
+          }
         });
 
         gsap.utils.toArray<HTMLElement>('.route-step').forEach((step, index) => {
@@ -256,14 +263,21 @@ function App() {
 
         showMobileFeature(0);
 
-        gsap.utils.toArray<HTMLElement>('.feature-step').forEach((step, index) => {
-          ScrollTrigger.create({
-            trigger: step,
-            start: 'top center',
-            end: 'bottom center',
-            onEnter: () => showMobileFeature(index),
-            onEnterBack: () => showMobileFeature(index)
-          });
+        let mobileActiveIndex = 0;
+        ScrollTrigger.create({
+          trigger: '.feature-section',
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => {
+            const nextIndex = Math.min(
+              featureSlides.length - 1,
+              Math.floor(self.progress * featureSlides.length)
+            );
+            if (nextIndex !== mobileActiveIndex) {
+              mobileActiveIndex = nextIndex;
+              showMobileFeature(nextIndex);
+            }
+          }
         });
 
         gsap.utils.toArray<HTMLElement>('.route-step-mobile').forEach((step, index) => {
@@ -314,7 +328,7 @@ function App() {
   return (
     <div ref={appRef} className="bg-shell text-ink">
       <main>
-        <section className="relative mx-auto max-w-[1560px] px-4 pb-12 pt-4 md:px-8 md:pt-6">
+        <section className="feature-section relative mx-auto max-w-[1560px] px-4 pb-12 pt-4 md:px-8 md:pt-6">
           <div className="hidden lg:block lg:min-h-[336vh]">
             <div className="grid gap-8 lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:grid-cols-[minmax(0,0.63fr)_minmax(320px,0.37fr)]">
               <div className="relative flex items-end overflow-hidden rounded-[3.5rem]">
