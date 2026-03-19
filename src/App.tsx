@@ -188,6 +188,21 @@ function App() {
 
         showDesktopFeature(0);
 
+        gsap.fromTo(
+          '.feature-media-0',
+          { scale: 1.12 },
+          {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.feature-section',
+              start: 'top top',
+              end: 'top+=40% top',
+              scrub: true
+            }
+          }
+        );
+
         let desktopActiveIndex = 0;
         ScrollTrigger.create({
           trigger: '.feature-section',
@@ -262,6 +277,21 @@ function App() {
         };
 
         showMobileFeature(0);
+
+        gsap.fromTo(
+          '.feature-mobile-media-0',
+          { scale: 1.12 },
+          {
+            scale: 1,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: '.feature-section',
+              start: 'top top',
+              end: 'top+=40% top',
+              scrub: true
+            }
+          }
+        );
 
         let mobileActiveIndex = 0;
         ScrollTrigger.create({
