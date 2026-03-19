@@ -147,7 +147,7 @@ function App() {
       const mm = gsap.matchMedia();
 
       mm.add('(min-width: 1024px)', () => {
-        const featureSegmentCount = featureSlides.length;
+        const featureTransitionCount = Math.max(featureSlides.length - 1, 1);
 
         gsap.fromTo(
           '.hero-frame',
@@ -165,7 +165,7 @@ function App() {
           featureSlides.forEach((_, index) => {
             gsap.to(`.feature-media-${index}`, {
               opacity: index === activeIndex ? 1 : 0,
-              duration: 0.55,
+              duration: 0.35,
               ease: 'power2.out',
               overwrite: true
             });
@@ -189,11 +189,11 @@ function App() {
 
         const updateDesktopFeatureZoom = (progress: number) => {
           featureSlides.forEach((_, index) => {
-            const segmentStart = index / featureSegmentCount;
+            const segmentStart = index / featureSlides.length;
             const segmentProgress = gsap.utils.clamp(
               0,
               1,
-              (progress - segmentStart) * featureSegmentCount
+              (progress - segmentStart) * featureSlides.length
             );
             const scale = index === 0 && progress <= 0
               ? 1.14
@@ -205,8 +205,34 @@ function App() {
           });
         };
 
+        const updateDesktopFeatureMedia = (progress: number) => {
+          const transitionProgress = progress * featureTransitionCount;
+          const baseIndex = Math.min(
+            featureSlides.length - 1,
+            Math.floor(transitionProgress)
+          );
+          const blend = gsap.utils.clamp(0, 1, transitionProgress - baseIndex);
+          const nextIndex = Math.min(baseIndex + 1, featureSlides.length - 1);
+
+          featureSlides.forEach((_, index) => {
+            const isBase = index === baseIndex;
+            const isNext = index === nextIndex && nextIndex !== baseIndex;
+
+            gsap.set(`.feature-media-${index}`, {
+              opacity: isBase || isNext ? 1 : 0,
+              zIndex: isNext ? 3 : isBase ? 2 : 1,
+              clipPath: isNext
+                ? `inset(${((1 - blend) * 100).toFixed(3)}% 0% 0% 0% round 3.5rem)`
+                : 'inset(0% 0% 0% 0% round 3.5rem)'
+            });
+          });
+
+          return baseIndex;
+        };
+
         showDesktopFeature(0);
         updateDesktopFeatureZoom(0);
+        updateDesktopFeatureMedia(0);
 
         let desktopActiveIndex = 0;
         ScrollTrigger.create({
@@ -214,10 +240,7 @@ function App() {
           start: 'top top',
           end: 'bottom bottom',
           onUpdate: (self) => {
-            const nextIndex = Math.min(
-              featureSlides.length - 1,
-              Math.floor(self.progress * featureSlides.length)
-            );
+            const nextIndex = updateDesktopFeatureMedia(self.progress);
             if (nextIndex !== desktopActiveIndex) {
               desktopActiveIndex = nextIndex;
               showDesktopFeature(nextIndex);
@@ -262,7 +285,7 @@ function App() {
       });
 
       mm.add('(max-width: 1023px)', () => {
-        const featureSegmentCount = featureSlides.length;
+        const featureTransitionCount = Math.max(featureSlides.length - 1, 1);
 
         const showMobileFeature = (activeIndex: number) => {
           featureSlides.forEach((_, index) => {
@@ -285,11 +308,11 @@ function App() {
 
         const updateMobileFeatureZoom = (progress: number) => {
           featureSlides.forEach((_, index) => {
-            const segmentStart = index / featureSegmentCount;
+            const segmentStart = index / featureSlides.length;
             const segmentProgress = gsap.utils.clamp(
               0,
               1,
-              (progress - segmentStart) * featureSegmentCount
+              (progress - segmentStart) * featureSlides.length
             );
             const scale = index === 0 && progress <= 0
               ? 1.14
@@ -301,8 +324,40 @@ function App() {
           });
         };
 
+        const updateMobileFeatureMedia = (progress: number) => {
+          const transitionProgress = progress * featureTransitionCount;
+          const baseIndex = Math.min(
+            featureSlides.length - 1,
+            Math.floor(transitionProgress)
+          );
+          const blend = gsap.utils.clamp(0, 1, transitionProgress - baseIndex);
+          const nextIndex = Math.min(baseIndex + 1, featureSlides.length - 1);
+
+          featureSlides.forEach((_, index) => {
+            const isBase = index === baseIndex;
+            const isNext = index === nextIndex && nextIndex !== baseIndex;
+
+            gsap.set(`.feature-mobile-panel-${index}`, {
+              opacity: isBase || isNext ? 1 : 0,
+              y: 0,
+              zIndex: isNext ? 3 : isBase ? 2 : 1
+            });
+
+            gsap.set(`.feature-mobile-media-${index}`, {
+              opacity: isBase || isNext ? 1 : 0,
+              y: 0,
+              clipPath: isNext
+                ? `inset(${((1 - blend) * 100).toFixed(3)}% 0% 0% 0% round 2.2rem)`
+                : 'inset(0% 0% 0% 0% round 2.2rem)'
+            });
+          });
+
+          return baseIndex;
+        };
+
         showMobileFeature(0);
         updateMobileFeatureZoom(0);
+        updateMobileFeatureMedia(0);
 
         let mobileActiveIndex = 0;
         ScrollTrigger.create({
@@ -310,10 +365,7 @@ function App() {
           start: 'top top',
           end: 'bottom bottom',
           onUpdate: (self) => {
-            const nextIndex = Math.min(
-              featureSlides.length - 1,
-              Math.floor(self.progress * featureSlides.length)
-            );
+            const nextIndex = updateMobileFeatureMedia(self.progress);
             if (nextIndex !== mobileActiveIndex) {
               mobileActiveIndex = nextIndex;
               showMobileFeature(nextIndex);
