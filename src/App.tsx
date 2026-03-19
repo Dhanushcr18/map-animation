@@ -399,11 +399,6 @@ function App() {
             </div>
           </div>
 
-          <div aria-hidden="true">
-            {featureSlides.map((slide) => (
-              <div key={`${slide.id}-feature-trigger`} className="feature-step h-[100vh]" />
-            ))}
-          </div>
         </section>
 
         <section className="relative mt-2 bg-route px-4 py-4 text-routeText md:px-8 md:py-6">
